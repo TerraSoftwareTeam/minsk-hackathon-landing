@@ -1,0 +1,10 @@
+services:
+  landing:
+    image: ${APP_IMAGE_NAME:-minsk-hackathon-landing}:${APP_IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: minsk-hackathon-landing
+    restart: unless-stopped
+    ports:
+      - "${APP_EXTERNAL_PORT:-8000}:80"

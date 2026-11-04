@@ -1,0 +1,327 @@
+@import "./lib-DMfMU-S2.css";
+@import "./Link-C6RwYuax.css";
+@import "./CopyText-BioCiT_F.css";
+@import "./LoginModal-D-8kJAxL.css";
+@import "./PageWrapper-CocMqPV9.css";
+@import "./index-BveQOuBp.css";
+@import "./pricing-ChnFC0xQ.css";
+@import "./SpecsPicker-D7dhmxy0.css";
+@import "./Home-OXlPRbeT.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--main-bg, #151515);
+  color: var(--text, #949494);
+  font-family: var(--font-body, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif);
+  overflow-x: hidden;
+}
+
+/* Fix header logo and banner image rendering so Tailwind reset does not distort them */
+._brand_1f85j_33 {
+  z-index: 9999;
+}
+
+._brand_1f85j_33 ._bgC_1f85j_47 {
+  background: #000;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+._brand_1f85j_33 ._bgs_1f85j_56 {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background-image: url('/assets/regular-D_k10KAs.gif');
+  background-repeat: repeat-x;
+  background-size: 1118px 1024px;
+  background-position-y: -420px;
+  image-rendering: pixelated;
+  animation: kyunCloudScroll 120s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes kyunCloudScroll {
+  0% {
+    background-position-x: calc(50% - 499px);
+  }
+  100% {
+    background-position-x: calc(50% - 499px - 1118px);
+  }
+}
+
+._kyun_1f85j_71 {
+  image-rendering: pixelated !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: calc(50% - 0.5px) !important;
+  transform: translate(-50%, -50%) !important;
+  max-width: none !important;
+  color: #fff;
+  filter: drop-shadow(0 0 10px #ffffff80);
+  opacity: 0.9;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Ticker marquee animation */
+@keyframes kyunMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.scroll-prompt-marquee {
+  display: flex;
+  width: max-content;
+  animation: kyunMarquee 45s linear infinite;
+}
+
+.scroll-prompt-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Header Banner: Pinned directly to top with no gap */
+._header_1f85j_9 {
+  top: 0 !important;
+}
+
+/* Navigation Bar: Expanded in height, centered text, clean styling */
+._nav_1f85j_83 {
+  height: auto !important;
+  min-height: 40px !important;
+  padding: 6px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  transition: none !important;
+  box-sizing: border-box !important;
+}
+
+._navInnerWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  text-align: center;
+  gap: 6px 28px;
+}
+
+._nav_1f85j_83 ._link_1f85j_103 {
+  margin: 0 !important;
+  padding: 4px 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  line-height: 20px !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+  transition: color 0.15s ease, filter 0.15s ease !important;
+}
+
+@media (max-width: 600px) {
+  ._navInnerWrapper {
+    gap: 4px 14px;
+  }
+  ._nav_1f85j_83 ._link_1f85j_103 {
+    padding: 3px 8px !important;
+    font-size: 15px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  ._navInnerWrapper {
+    gap: 4px 8px;
+  }
+  ._nav_1f85j_83 ._link_1f85j_103 {
+    padding: 2px 6px !important;
+    font-size: 14px !important;
+  }
+}
+
+/* Section 6: People stay for a reason */
+._testimonialsHeader_1w2bm_295 h1 {
+  font-family: Pixellari, Mix, Gohu, sans-serif !important;
+  font-size: 48px !important;
+  line-height: 48px !important;
+  font-weight: 400 !important;
+  color: #151515 !important;
+  margin-top: 0 !important;
+  margin-bottom: 24px !important;
+  padding-left: 0 !important;
+  text-shadow: 0 -96px 0 rgba(0,0,0,0.008), 0 -43px 0 rgba(0,0,0,0.016), 0 -11px 0 rgba(0,0,0,0.024), 0 12px 0 rgba(0,0,0,0.024), 0 46px 0 rgba(0,0,0,0.016), 0 100px 0 rgba(0,0,0,0.008) !important;
+  filter: drop-shadow(rgba(0, 0, 0, 0.32) 0px 2px 0px) drop-shadow(rgba(0, 0, 0, 0.34) 0px 0px 3px) drop-shadow(rgba(0, 0, 0, 0.2) 0px 0px 10px) !important;
+}
+
+._testimonialsHeader_1w2bm_295 p {
+  color: #555 !important;
+  font-size: 15px !important;
+  line-height: 22px !important;
+  max-width: 580px !important;
+  margin: 0 auto !important;
+}
+
+@keyframes testimonialsMarquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-1584px, 0, 0);
+  }
+}
+
+._testimonialsRail_1w2bm_306 {
+  overflow: hidden !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 16px 0 28px !important;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6vw calc(100% - 6vw), transparent 100%) !important;
+  mask-image: linear-gradient(90deg, transparent 0, #000 6vw calc(100% - 6vw), transparent 100%) !important;
+}
+
+._testimonialsTrack_1w2bm_341 {
+  display: flex !important;
+  width: max-content !important;
+  will-change: transform !important;
+  animation: testimonialsMarquee 42s linear infinite !important;
+}
+
+._testimonialsRail_1w2bm_306:hover ._testimonialsTrack_1w2bm_341 {
+  animation-play-state: paused !important;
+}
+
+._testimonialsGroup_1w2bm_352 {
+  display: flex !important;
+  align-items: stretch !important;
+  gap: 28px !important;
+  padding-right: 28px !important;
+  flex: none !important;
+  width: 1584px !important;
+  box-sizing: border-box !important;
+}
+
+._testimonialCard_1w2bm_360 {
+  height: 320px !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  background: #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(0,0,0,0.04), 0 10px 30px rgba(0,0,0,0.06) !important;
+  padding: 24px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+}
+
+._longTestimonial_1w2bm_376 {
+  flex: 0 0 560px !important;
+  width: 560px !important;
+}
+
+._shortTestimonial_1w2bm_380 {
+  flex: 0 0 380px !important;
+  width: 380px !important;
+}
+
+._testimonialPreview_1w2bm_384 {
+  position: relative !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: 100% !important;
+}
+
+._testimonialBody_1w2bm_392 {
+  box-sizing: border-box !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  color: #333 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+}
+
+._testimonialBody_1w2bm_392._masked_1w2bm_397 {
+  -webkit-mask-image: linear-gradient(#000 0 calc(100% - 32px), transparent 100%) !important;
+  mask-image: linear-gradient(#000 0 calc(100% - 32px), transparent 100%) !important;
+}
+
+._testimonialFlowShape_1w2bm_402 {
+  float: right !important;
+  shape-margin: 16px !important;
+  shape-outside: polygon(100% 0, 100% calc(100% - 84px), 0 calc(100% - 84px), 0 100%, 100% 100%) !important;
+  pointer-events: none !important;
+  width: min(100%, 280px) !important;
+  height: 100% !important;
+}
+
+._testimonialIdentity_1w2bm_411 {
+  text-align: right !important;
+  justify-content: flex-end !important;
+  align-items: flex-end !important;
+  gap: 12px !important;
+  max-width: min(100%, 280px) !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  position: absolute !important;
+  bottom: 0px !important;
+  right: 0px !important;
+}
+
+._testimonialMeta_1w2bm_424 {
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  align-items: flex-end !important;
+  min-width: 0 !important;
+  height: 56px !important;
+  padding-bottom: 2px !important;
+  display: flex !important;
+}
+
+._testimonialMeta_1w2bm_424 strong {
+  color: #151515 !important;
+  font-size: 15px !important;
+  filter: none !important;
+}
+
+._testimonialMeta_1w2bm_424 a {
+  color: #777 !important;
+  font-size: 12px !important;
+  text-decoration: underline !important;
+}
+
+._testimonialAvatar_1w2bm_441 {
+  width: 56px !important;
+  height: 56px !important;
+  image-rendering: pixelated !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  border-radius: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+._testimonialActionStrip_1w2bm_454 {
+  margin-top: 10px !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  position: absolute !important;
+  bottom: 14px !important;
+  left: 24px !important;
+}
+
+._showMore_1w2bm_464 {
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  background: #f0f0f0 !important;
+  color: #151515 !important;
+  padding: 4px 12px !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+}
+
+._showMore_1w2bm_464:hover {
+  background: #e4e4e4 !important;
+}
