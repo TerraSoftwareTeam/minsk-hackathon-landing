@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ModelStage from './components/ModelStage';
-import SpecsPicker from './components/SpecsPicker';
+
 import DitherTransition from './components/DitherTransition';
 
 const SPRITES = [
@@ -43,35 +43,33 @@ const SPRITE_POSITIONS = [
 
 const TESTIMONIALS = [
   {
-    id: 'context-coding',
-    name: 'Context Coding',
-    url: 'https://context-coding.com/',
-    site: 'context-coding.com',
+    id: 'student',
+    name: 'Максим Ковалёв, 10 «Б» класс',
+    url: '#download',
+    site: 'Капитан сборной, СШ №19',
     avatar: '/assets/testimonial-context-56-DN7bvU5l.png',
     paragraphs: [
-      'Kyun caters to the needs of the privacy-focused individuals. They are one of the few hosting platforms that will take Monero as payment. They make it super simple to do business, and support gets back to me almost instantly every time that I’ve needed them. They also have an impressive up-time which is tracked at their status page https://status.kyun.sh which is very handy for troubleshooting.',
-      'I trust Kyun with my production web servers because of the support experiences and care I’ve received from them. Also, their prices are unbeatable when it comes to comparable VPS’s, and the entire vibe of their platform and team is just fun. It’s just a fun experience to be a customer of Kyun hosting.',
-      'Another impressive thing about Kyun is that they are very transparent about their incidents (which are rare); they’ve logged their incidents right on the site for you to see what they’ve gone through. As an emerging and growing company, I was hesitant to join them, but I’ve been with Kyun for several years now, and they are my first reference to those who ask me about VPS hosting. Great job, Kyun!'
+      'В приложении всё просто: собрали свою команду 10-х классов, выиграли школьный этап по волейболу и вышли на район. В следующую субботу играем дерби против 7-й гимназии. Теперь субботы ждём всей параллелью!'
     ]
   },
   {
-    id: 'preservetube',
-    name: 'unknown',
-    url: 'https://preservetube.com/',
-    site: 'preservetube.com',
+    id: 'teacher',
+    name: 'Алексей Николаевич Крюков',
+    url: '#download',
+    site: 'Учитель физкультуры высшей категории',
     avatar: '/assets/testimonial-preservetube-56-DjHsNEJ4.png',
     paragraphs: [
-      'kyun is my favourite way to deploy vms. small test vms, bigger vms to handle data ingestion, or for letting it download a massive file for a whole month and then downloading it from the brick once it’s done. with the new mesa, i can even have openclaw running on kyun deploy new kyun vms for me. revolutionary.'
+      'Главный плюс — ноль бумажной волокиты. Списки классов подгружены автоматически, протокол матча заполняется прямо у сетки на телефоне. Договориться об игре с соседней школой теперь занимает ровно 30 секунд.'
     ]
   },
   {
-    id: 'kvm',
-    name: 'kvm',
-    url: 'https://elyria.cc/',
-    site: 'elyria.cc',
+    id: 'deputy',
+    name: 'Елена Викторовна Макаренко',
+    url: '#download',
+    site: 'Зам. директора по воспитательной работе',
     avatar: '/assets/testimonial-kvm-56-BZ6qXm7o.png',
     paragraphs: [
-      'i flipping love kyun 🤤'
+      'Шестой школьный день перестал быть формальностью. Ученики сами выбирают события: кто на районную лигу в спортзал, кто на IT-квиз или мастер-класс. Реальная посещаемость выросла в разы, и всё прозрачно для руководства.'
     ]
   }
 ];
@@ -79,7 +77,6 @@ const TESTIMONIALS = [
 export default function App() {
   const [activeModalTestimonial, setActiveModalTestimonial] = useState(null);
   const [activeNav, setActiveNav] = useState('home');
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   const headerRef = useRef(null);
   const brandRef = useRef(null);
@@ -109,7 +106,8 @@ export default function App() {
       b.style.height = `${lerp(120, 70, bVal)}px`;
       b.style.width = `min(${lerp(650, 1000, bVal)}px, calc(100% - 30px))`;
 
-      l.style.height = `${lerp(60, 48, bVal)}px`;
+      l.style.fontSize = `${lerp(52, 34, bVal)}px`;
+      l.style.letterSpacing = `${lerp(0.16, 0.1, bVal)}em`;
 
       nav.style.transform = `translateX(-50%) translateY(${lerp(0, -90, nVal)}px)`;
       nav.style.width = `min(${lerp(650, 1000, nVal)}px, calc(100% - 30px))`;
@@ -150,6 +148,25 @@ export default function App() {
     const onScroll = () => {
       target = isMobile ? 1 : Math.min(1, Math.max(0, window.scrollY) / 100);
       if (!animId) animId = requestAnimationFrame(step);
+
+      // Determine active nav section based on scroll position
+      const scrollPos = window.scrollY + 160;
+      const secDownload = document.querySelector('[data-home-section-index="7"]');
+      const secReviews = document.querySelector('[data-home-section-index="6"]');
+      const secSolution = document.querySelector('[data-home-section-index="3"]');
+      const secFormats = document.querySelector('[data-home-section-index="1"]');
+
+      if (secDownload && scrollPos >= secDownload.offsetTop - 50) {
+        setActiveNav('download');
+      } else if (secReviews && scrollPos >= secReviews.offsetTop - 50) {
+        setActiveNav('reviews');
+      } else if (secSolution && scrollPos >= secSolution.offsetTop - 50) {
+        setActiveNav('solution');
+      } else if (secFormats && scrollPos >= secFormats.offsetTop - 50) {
+        setActiveNav('formats');
+      } else {
+        setActiveNav('home');
+      }
     };
 
     const onResize = () => {
@@ -166,6 +183,24 @@ export default function App() {
       if (animId) cancelAnimationFrame(animId);
     };
   }, []);
+
+  // Smooth scroll helper with header offset
+  const scrollToSection = (sectionIndex, navKey) => {
+    setActiveNav(navKey);
+    if (navKey === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const el = document.querySelector(`[data-home-section-index="${sectionIndex}"]`);
+    if (el) {
+      const topBarHeight = window.innerWidth <= 1000 ? 110 : 130;
+      const elTop = el.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: Math.max(0, elTop - topBarHeight),
+        behavior: 'smooth',
+      });
+    }
+  };
 
   return (
     <div id="kyun_root">
@@ -184,12 +219,10 @@ export default function App() {
         <div className="_bgC_1f85j_47">
           <span className="_bgs_1f85j_56"></span>
         </div>
-        <img
+        <span
           ref={logoRef}
           className="_kyun_1f85j_71"
-          alt="Kyun logo"
-          src="data:image/gif;base64,R0lGODlhKQAMAIABAP///4iIiCH5BAEKAAEALAAAAAApAAwAAAJLDBB5yYre4nlwImsexjBPZ4XXt33eaIriGZ4gSqomu3DsLdur7bbl+oI1SjRY63XDGTWxhTI3oiF7M6gnOP1RrCkdJcNwhlUdUKIAADs="
-        />
+        >ЛІГА</span>
       </div>
 
       {/* Nav */}
@@ -200,43 +233,50 @@ export default function App() {
             href="#home"
             onClick={(e) => {
               e.preventDefault();
-              setActiveNav('home');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              scrollToSection(0, 'home');
             }}
           >
-            home
+            Главная
           </a>
           <a
-            className={`nou _link_1f85j_103 ${activeNav === 'services' ? '_active_1f85j_119' : ''}`}
-            href="#services"
+            className={`nou _link_1f85j_103 ${activeNav === 'formats' ? '_active_1f85j_119' : ''}`}
+            href="#formats"
             onClick={(e) => {
               e.preventDefault();
-              setActiveNav('services');
-              document.querySelector('[data-home-section-index="3"]')?.scrollIntoView({ behavior: 'smooth' });
+              scrollToSection(1, 'formats');
             }}
           >
-            services
+            Форматы
           </a>
           <a
-            className={`nou _link_1f85j_103 ${activeNav === 'docs' ? '_active_1f85j_119' : ''}`}
-            href="#docs"
+            className={`nou _link_1f85j_103 ${activeNav === 'solution' ? '_active_1f85j_119' : ''}`}
+            href="#solution"
             onClick={(e) => {
               e.preventDefault();
-              setActiveNav('docs');
-              document.querySelector('[data-home-section-index="1"]')?.scrollIntoView({ behavior: 'smooth' });
+              scrollToSection(3, 'solution');
             }}
           >
-            docs
+            Решение
           </a>
           <a
-            className={`nou _link_1f85j_103 ${activeNav === 'account' ? '_active_1f85j_119' : ''}`}
-            href="#account"
+            className={`nou _link_1f85j_103 ${activeNav === 'reviews' ? '_active_1f85j_119' : ''}`}
+            href="#reviews"
             onClick={(e) => {
               e.preventDefault();
-              setIsAuthOpen(true);
+              scrollToSection(6, 'reviews');
             }}
           >
-            account
+            Отзывы
+          </a>
+          <a
+            className={`nou _link_1f85j_103 ${activeNav === 'download' ? '_active_1f85j_119' : ''}`}
+            href="#download"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection(7, 'download');
+            }}
+          >
+            Скачать
           </a>
         </div>
       </nav>
@@ -247,7 +287,7 @@ export default function App() {
           <main className="_landing_1w2bm_1 relative overflow-hidden">
             {/* Section 0: Welcome Section */}
             <section
-              className="_section_1w2bm_5 _welcomeSection_1w2bm_36 relative box-border flex flex-col justify-end overflow-hidden p-0"
+              className="_section_1w2bm_5 _welcomeSection_1w2bm_36 relative box-border flex flex-col justify-start overflow-hidden p-0"
               style={{ '--section-z': 40 }}
             >
               {/* Marquee Ticker */}
@@ -259,13 +299,13 @@ export default function App() {
                   <span className="_scrollPromptGroup_1w2bm_537" aria-hidden="false">
                     {Array.from({ length: 8 }).map((_, i) => (
                       <span key={i} className="_scrollPromptUnit_1w2bm_543">
-                        SCROLL DOWN
+                        АКТИВНАЯ СУББОТА
                         <span className="_animDown_1w2bm_553" aria-hidden="true">
                           <span>^</span>
                           <span>^</span>
                           <span>^</span>
                         </span>
-                        LEARN MORE
+                        ТУРНИРЫ И МАТЧИ
                         <span className="_animDown_1w2bm_553" aria-hidden="true">
                           <span>^</span>
                           <span>^</span>
@@ -277,13 +317,13 @@ export default function App() {
                   <span className="_scrollPromptGroup_1w2bm_537" aria-hidden="true">
                     {Array.from({ length: 8 }).map((_, i) => (
                       <span key={i} className="_scrollPromptUnit_1w2bm_543">
-                        SCROLL DOWN
+                        АКТИВНАЯ СУББОТА
                         <span className="_animDown_1w2bm_553" aria-hidden="true">
                           <span>^</span>
                           <span>^</span>
                           <span>^</span>
                         </span>
-                        LEARN MORE
+                        ТУРНИРЫ И МАТЧИ
                         <span className="_animDown_1w2bm_553" aria-hidden="true">
                           <span>^</span>
                           <span>^</span>
@@ -308,54 +348,119 @@ export default function App() {
                 ))}
               </div>
 
-              {/* Welcome Content & Character */}
-              <div className="relative z-6 mx-auto box-border flex h-full w-full max-w-[1600px] flex-col items-start justify-end gap-2 px-4 lg:flex-row lg:items-end lg:justify-between lg:gap-8">
-                <div className="relative z-7 box-border w-full min-w-0 pt-4 pb-12 lg:w-[600px] lg:max-w-[600px] lg:shrink-0 lg:pb-24">
-                  <article className="prose _copyBlock_1w2bm_121 w-full max-w-[600px] text-left">
+              {/* Welcome Content & Product Overview */}
+              <div className="relative z-6 mx-auto box-border flex w-full max-w-none md:max-w-330 flex-col items-start justify-start gap-6 px-4 md:px-5 lg:flex-row lg:items-center lg:justify-between lg:gap-12 pt-2 pb-8">
+                <div className="relative z-7 box-border w-full min-w-0 lg:w-[640px] lg:max-w-[640px] lg:shrink-0">
+                  <article className="prose _copyBlock_1w2bm_121 w-full max-w-[640px] text-left">
                     <div className="mb-4">
-                      <h1 className="_heroTitle_1w2bm_67 pb-0 mb-0 max-w-none">Welcome</h1>
-                      <p className="_subtitle_1w2bm_77">to your new home</p>
+                      <div className="inline-block bg-white/10 text-white border border-white/20 px-3 py-1 text-xs font-mono uppercase tracking-wider mb-3">
+                        Платформа 6-го школьного дня
+                      </div>
+                      <h1 className="_heroTitle_1w2bm_67">
+                        Школьные турниры и полезная суббота
+                      </h1>
+                      <p className="text-base sm:text-lg text-[#ccc] leading-relaxed mt-2 max-w-[560px]">
+                        Единая система спортивных турниров, матчей между школами и субботних активностей по всей Беларуси.
+                      </p>
                     </div>
-                    <p className="max-w-none">
-                      Private cloud for humans and agents. Kyun gives you one-click-deploy apps,
-                      virtual machines, containers, and hot-attachable block storage without KYC,
-                      enterprise theater, or surprise bills.
+
+                    <p className="max-w-none text-base leading-relaxed text-[#aaa]">
+                      Заявки команд за 10 секунд, электронные протоколы матчей и открытый рейтинг школ — прямо в смартфоне.
                     </p>
-                    <p className="_priceLine_1w2bm_82 max-w-none" data-testid="price-line">
-                      <strong>
-                        Start with compute from 1.60 EUR/mo, HDD storage from 5.00 EUR/TB/mo,
-                        available in Netherlands, United States and Romania.
-                      </strong>
-                    </p>
+
+                    {/* Hero Download Buttons */}
+                    <div className="mt-6 flex flex-wrap items-center gap-3">
+                      <a
+                        href="/liga.apk"
+                        download="liga.apk"
+                        className="nou"
+                      >
+                        <button
+                          data-yakiniku="button"
+                          className="relative control _loadingPhaseB_nf8qc_68 _button_nf8qc_17 bg-white text-black font-bold px-6 py-3 flex items-center gap-2 hover:bg-[#e0e0e0] transition-colors text-base shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                        >
+                          <span className="_content_nf8qc_108 flex items-center gap-2.5">
+                            <span className="text-base">⬇</span>
+                            <span>Скачать .APK (24 MB)</span>
+                          </span>
+                        </button>
+                      </a>
+
+                      <div className="relative inline-block">
+                        <button
+                          disabled
+                          data-yakiniku="button"
+                          className="relative control _button_nf8qc_17 bg-[#1c1c1c] text-[#888] border border-[#333] px-4 py-3 cursor-not-allowed flex items-center gap-2 text-sm"
+                        >
+                          <span className="_content_nf8qc_108">App Store</span>
+                        </button>
+                        <span className="absolute -top-2.5 -right-2 bg-white text-black text-[9px] font-bold px-1.5 py-0.5 rounded shadow border border-black/30 font-mono tracking-wider">
+                          СКОРО
+                        </span>
+                      </div>
+
+                      <div className="relative inline-block">
+                        <button
+                          disabled
+                          data-yakiniku="button"
+                          className="relative control _button_nf8qc_17 bg-[#1c1c1c] text-[#888] border border-[#333] px-4 py-3 cursor-not-allowed flex items-center gap-2 text-sm"
+                        >
+                          <span className="_content_nf8qc_108">Google Play</span>
+                        </button>
+                        <span className="absolute -top-2.5 -right-2 bg-white text-black text-[9px] font-bold px-1.5 py-0.5 rounded shadow border border-black/30 font-mono tracking-wider">
+                          СКОРО
+                        </span>
+                      </div>
+                    </div>
                   </article>
                 </div>
 
-                <div className="relative z-6 -ml-4 -mr-8 hidden lg:flex min-h-0 w-full flex-grow self-stretch items-end justify-center lg:justify-end">
-                  <div
-                    className="relative flex h-full max-h-full w-full max-w-[800px] items-end justify-center lg:justify-end"
-                    style={{ maxHeight: 'min(var(--welcome-section-height, 620px), 760px)' }}
-                  >
-                    <div
-                      className="relative flex h-full max-h-full max-w-full items-end justify-center"
-                      style={{ transform: 'translateY(-2px)' }}
-                    >
-                      <img
-                        alt="Kyoko"
-                        className="relative z-1 block max-w-none"
-                        fetchPriority="high"
-                        src="/assets/kyoko-DdSesS4Q.gif"
-                        style={{
-                          aspectRatio: '243 / 234',
-                          width: 'calc(min(var(--welcome-section-height, 620px), 760px) * 1.03846)',
-                          maxWidth: '100%',
-                          height: 'auto',
-                          objectFit: 'contain',
-                          objectPosition: 'right bottom',
-                          imageRendering: 'pixelated',
-                          filter: 'var(--welcome-kyoko-filter, brightness(0.9) contrast(0.9) saturate(0.9))'
-                        }}
-                      />
+                <div className="relative z-6 hidden lg:flex min-h-0 w-full flex-grow self-stretch items-center justify-end pr-2">
+                  <div className="relative flex flex-col gap-3 w-full max-w-[430px]">
+
+                    {/* Match Card Preview */}
+                    <div className="border border-white/20 bg-[#121212] p-5 shadow-2xl">
+                      <div className="flex justify-between items-center text-xs font-mono text-[#aaa] mb-4 pb-2.5 border-b border-white/10">
+                        <span className="uppercase tracking-wider">Суббота · 11:30 · Волейбол</span>
+                        <span className="px-2 py-0.5 bg-white text-black font-bold text-[10px] tracking-wider">МАТЧ ДНЯ</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center my-3 text-base font-bold text-white">
+                        <div className="flex-1">
+                          <div className="text-white text-lg font-bold">СШ № 19</div>
+                          <div className="text-xs text-[#888] font-mono mt-0.5">Фрунзенский р-н</div>
+                        </div>
+                        <div className="px-3.5 py-1.5 bg-white/10 border border-white/20 text-white font-mono text-sm font-bold mx-3 tracking-widest">
+                          2 : 1
+                        </div>
+                        <div className="flex-1 text-right">
+                          <div className="text-white text-lg font-bold">Гимназия № 7</div>
+                          <div className="text-xs text-[#888] font-mono mt-0.5">Партизанский р-н</div>
+                        </div>
+                      </div>
+
+                      <div className="text-xs text-[#888] font-mono mt-4 pt-3 border-t border-white/10 flex justify-between items-center">
+                        <span>Спортзал СШ № 19</span>
+                        <span className="text-white font-medium">1/4 финала района</span>
+                      </div>
                     </div>
+
+                    {/* Quick Stats Grid */}
+                    <div className="grid grid-cols-3 gap-2.5 text-center font-mono">
+                      <div className="border border-white/15 bg-[#121212] p-3.5">
+                        <div className="text-2xl font-bold text-white">480+</div>
+                        <div className="text-[11px] text-[#aaa] mt-1">Школ в системе</div>
+                      </div>
+                      <div className="border border-white/15 bg-[#121212] p-3.5">
+                        <div className="text-2xl font-bold text-white">120k</div>
+                        <div className="text-[11px] text-[#aaa] mt-1">Учеников</div>
+                      </div>
+                      <div className="border border-white/15 bg-[#121212] p-3.5">
+                        <div className="text-2xl font-bold text-white">0</div>
+                        <div className="text-[11px] text-[#aaa] mt-1">Бумаг и справок</div>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -364,7 +469,7 @@ export default function App() {
             {/* Dither Transition 0 -> 1 */}
             <DitherTransition fromTone="dark" toTone="dark" />
 
-            {/* Section 1: Pushing the envelope (Dark Tone, 3D Rocket + Orbiting Satellites) */}
+            {/* Section 1: Сквозные турниры (Dark Tone, 3D Rocket + Orbiting Satellites) */}
             <section
               data-home-background-section="true"
               data-home-section-index="1"
@@ -376,15 +481,25 @@ export default function App() {
                 <ModelStage model="rocket" side="left" mirror={true} tone="dark" />
                 <div className="ml-auto flex-1 w-full max-w-none md:w-auto md:max-w-155">
                   <article className="prose _copyBlock_1w2bm_121 relative z-4 w-full max-w-none md:max-w-155 p-4 text-left lg:p-7">
-                    <h1>Pushing the envelope.</h1>
-                    <p>
-                      We poured stupid amounts of time into making Kyun the best cloud platform
-                      we’ve ever used.
+                    <h1>Турниры от школы до республики</h1>
+                    <p className="text-base text-[#ccc] leading-relaxed mb-4">
+                      Сквозная олимпийская система. Победа на внутришкольном этапе автоматически переводит сборную класса в сетку районных, а затем городских соревнований.
                     </p>
-                    <p>
-                      All of Kyun’s platform software is built from scratch, by us, for Kyun. One
-                      coherent interface for managing all of your services.
-                    </p>
+
+                    <div className="grid grid-cols-3 gap-2 my-4 font-mono text-xs">
+                      <div className="border border-white/15 bg-white/5 p-2.5">
+                        <div className="text-white font-bold text-sm">01. Школа</div>
+                        <div className="text-[#888] text-[11px] mt-0.5">Отбор классов</div>
+                      </div>
+                      <div className="border border-white/15 bg-white/5 p-2.5">
+                        <div className="text-white font-bold text-sm">02. Район</div>
+                        <div className="text-[#888] text-[11px] mt-0.5">Дерби школ</div>
+                      </div>
+                      <div className="border border-white/15 bg-white/5 p-2.5">
+                        <div className="text-white font-bold text-sm">03. Финал</div>
+                        <div className="text-[#888] text-[11px] mt-0.5">Республика</div>
+                      </div>
+                    </div>
                   </article>
                 </div>
               </div>
@@ -393,7 +508,7 @@ export default function App() {
             {/* Dither Transition 1 -> 2 (Dark -> Light) */}
             <DitherTransition fromTone="dark" toTone="light" />
 
-            {/* Section 2: Kyun is for the people (Light Tone, 3D Grass + Orbiting Satellites) */}
+            {/* Section 2: Матчи между школами (Light Tone, 3D Grass + Orbiting Satellites) */}
             <section
               data-home-background-section="true"
               data-home-section-index="2"
@@ -404,13 +519,25 @@ export default function App() {
               <div className="relative z-4 mx-auto w-full box-border max-w-none px-0 py-10 md:max-w-330 md:px-5 md:py-12 flex flex-col md:flex-row items-center justify-between gap-2 md:gap-16">
                 <div className="mr-auto text-left flex-1 w-full max-w-none md:w-auto md:max-w-155">
                   <article className="prose _copyBlock_1w2bm_121 relative z-4 w-full max-w-none md:max-w-155 p-4 text-left lg:p-7">
-                    <h1>Kyun is for the people.</h1>
-                    <p>Kyun is not enterprise cloud, and we’re proud of that.</p>
-                    <p>
-                      No HR speak, no debt collectors. no pay-as-you-go bill waiting at the end of
-                      the month.
+                    <h1>Матчи между соседними школами</h1>
+                    <p className="text-base text-[#333] leading-relaxed mb-4">
+                      Каждая школа формирует сборные и может вызвать соперников из соседней школы на любую свободную субботу без бумажных согласований.
                     </p>
-                    <p>Made by real humans, for real humans. We’re keeping it real.</p>
+
+                    <div className="grid grid-cols-3 gap-2 my-4 font-mono text-xs">
+                      <div className="border border-black/15 bg-black/5 p-2.5">
+                        <div className="text-black font-bold text-sm">01. Вызов</div>
+                        <div className="text-[#666] text-[11px] mt-0.5">В приложении</div>
+                      </div>
+                      <div className="border border-black/15 bg-black/5 p-2.5">
+                        <div className="text-black font-bold text-sm">02. Зал</div>
+                        <div className="text-[#666] text-[11px] mt-0.5">Согласование</div>
+                      </div>
+                      <div className="border border-black/15 bg-black/5 p-2.5">
+                        <div className="text-black font-bold text-sm">03. Рейтинг</div>
+                        <div className="text-[#666] text-[11px] mt-0.5">Очки района</div>
+                      </div>
+                    </div>
                   </article>
                 </div>
                 <ModelStage model="grass" side="right" tone="light" />
@@ -420,7 +547,7 @@ export default function App() {
             {/* Dither Transition 2 -> 3 (Light -> Dark) */}
             <DitherTransition fromTone="light" toTone="dark" />
 
-            {/* Section 3: Only pay for what you need (Dark Tone, Specs Picker) */}
+            {/* Section 3: Было бесполезно -> Стало полезно (Dark Tone, Specs Picker + Comparison) */}
             <section
               data-home-background-section="true"
               data-home-section-index="3"
@@ -430,14 +557,71 @@ export default function App() {
             >
               <div className="relative z-4 mx-auto w-full box-border max-w-none px-0 py-10 md:max-w-350 md:px-5 md:py-12">
                 <div className="_demoLayout_1w2bm_139 flex flex-col gap-9 md:grid md:gap-16 md:items-center">
-                  <SpecsPicker />
+                  {/* How it works — step flow */}
+                  <div className="relative z-4 w-full">
+                    <div className="mb-5 text-xs uppercase tracking-widest font-mono font-bold text-white">
+                      // порядок проведения
+                    </div>
+                    <div className="flex flex-col">
+                      {[
+                        { step: '01', title: 'Создание события', desc: 'Преподаватель задаёт формат, дату и спортзал за 1 минуту.' },
+                        { step: '02', title: 'Сбор команд', desc: 'Ученики подтверждают состав из готовых списков классов.' },
+                        { step: '03', title: 'Судейство онлайн', desc: 'Счёт и фолы фиксируются с телефона прямо у площадки.' },
+                        { step: '04', title: 'Итоги в рейтинг', desc: 'Очки автоматически уходят в сводную таблицу района.' },
+                      ].map(({ step, title, desc }, i, arr) => (
+                        <div key={step} className="flex gap-4 relative">
+                          {i < arr.length - 1 && (
+                            <div className="absolute left-[20px] top-11 bottom-0 w-px bg-white/15" />
+                          )}
+                          <div
+                            className="flex-shrink-0 w-10 h-10 border border-white/20 bg-white/5 flex items-center justify-center font-mono font-bold text-sm text-white"
+                          >{step}</div>
+                          <div className="pb-6">
+                            <div className="text-[15px] text-white font-bold leading-snug mb-0.5">{title}</div>
+                            <div className="text-[13px] text-[#aaa] leading-relaxed">{desc}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                   <article className="prose _copyBlock_1w2bm_121 relative z-4 w-full max-w-none md:max-w-155 p-4 text-left lg:p-7 ml-auto">
-                    <h1>Only pay for what you need.</h1>
-                    <p>Pick the machine you actually want. Fully customizable specs.</p>
-                    <p>
-                      Don't need a whole month? Want to downgrade? Get an automatic prorated refund
-                      when you delete or downgrade any service.
+                    <div className="inline-block bg-white/10 text-white border border-white/20 px-3 py-1 text-xs font-mono uppercase tracking-wider mb-3">
+                      Автоматизация субботы
+                    </div>
+                    <h1>Организация без бумажной рутины</h1>
+                    <p className="text-base text-[#ccc] leading-relaxed mb-4">
+                      Подготовка матчей, регистрация команд и подведение итогов — всё в едином защищённом протоколе без бумажных ведомостей.
                     </p>
+                    
+                    <div className="flex flex-col gap-2.5 mt-4">
+                      <div className="p-3 bg-white/5 border border-white/15">
+                        <div className="text-white font-bold font-mono text-xs uppercase mb-0.5">
+                          Электронный протокол матча
+                        </div>
+                        <p className="m-0 text-xs text-[#aaa] leading-relaxed">
+                          Фиксация счёта, авторов голов и фолов со смартфона судьи в спортзале.
+                        </p>
+                      </div>
+
+                      <div className="p-3 bg-white/5 border border-white/15">
+                        <div className="text-white font-bold font-mono text-xs uppercase mb-0.5">
+                          Автоматическая турнирная сетка
+                        </div>
+                        <p className="m-0 text-xs text-[#aaa] leading-relaxed">
+                          Мгновенный переход победителей в следующий тур без ручного подсчёта.
+                        </p>
+                      </div>
+
+                      <div className="p-3 bg-white/5 border border-white/15">
+                        <div className="text-white font-bold font-mono text-xs uppercase mb-0.5">
+                          Сквозной районный рейтинг
+                        </div>
+                        <p className="m-0 text-xs text-[#aaa] leading-relaxed">
+                          Открытая статистика результатов классов, параллелей и школ района.
+                        </p>
+                      </div>
+                    </div>
                   </article>
                 </div>
               </div>
@@ -446,7 +630,7 @@ export default function App() {
             {/* Dither Transition 3 -> 4 (Dark -> Light) */}
             <DitherTransition fromTone="dark" toTone="light" />
 
-            {/* Section 4: We're there for you (Light Tone, 3D Speech + Orbiting Satellites) */}
+            {/* Section 4: Одиночные мероприятия (Light Tone, 3D Speech + Orbiting Satellites) */}
             <section
               data-home-background-section="true"
               data-home-section-index="4"
@@ -457,19 +641,25 @@ export default function App() {
               <div className="relative z-4 mx-auto w-full box-border max-w-none px-0 py-10 md:max-w-330 md:px-5 md:py-12 flex flex-col md:flex-row items-center justify-between gap-2 md:gap-16">
                 <div className="mr-auto text-left flex-1 w-full max-w-none md:w-auto md:max-w-155">
                   <article className="prose _copyBlock_1w2bm_121 relative z-4 w-full max-w-none md:max-w-155 p-4 text-left lg:p-7">
-                    <h1>We’re there for you.</h1>
-                    <p>
-                      Something went wrong? Need help with a VM, container, Brick, or payment? Have
-                      an idea that would make Kyun better?
+                    <h1>Субботние ивенты: не только спорт</h1>
+                    <p className="text-base text-[#333] leading-relaxed mb-4">
+                      Единая городская афиша мастер-классов, квизов, хакатонов и экскурсий от центров дополнительного образования, музеев и вузов.
                     </p>
-                    <p>
-                      Chat with Kyun from the corner of the page. Kyoko can help right away, and
-                      humans can step in when you need us.
-                    </p>
-                    <p>
-                      Don’t like AI? Turn on <strong>Ultra Private Mode</strong> and talk directly to
-                      staff.
-                    </p>
+
+                    <div className="grid grid-cols-3 gap-2 my-4 font-mono text-xs">
+                      <div className="border border-black/15 bg-black/5 p-2.5">
+                        <div className="text-black font-bold text-sm">01. Афиша</div>
+                        <div className="text-[#666] text-[11px] mt-0.5">События города</div>
+                      </div>
+                      <div className="border border-black/15 bg-black/5 p-2.5">
+                        <div className="text-black font-bold text-sm">02. Запись</div>
+                        <div className="text-[#666] text-[11px] mt-0.5">В 1 касание</div>
+                      </div>
+                      <div className="border border-black/15 bg-black/5 p-2.5">
+                        <div className="text-black font-bold text-sm">03. Вход</div>
+                        <div className="text-[#666] text-[11px] mt-0.5">По QR-коду</div>
+                      </div>
+                    </div>
                   </article>
                 </div>
                 <ModelStage model="speech" side="right" tone="light" />
@@ -479,7 +669,7 @@ export default function App() {
             {/* Dither Transition 4 -> 5 (Light -> Dark) */}
             <DitherTransition fromTone="light" toTone="dark" />
 
-            {/* Section 5: Private, really private (Dark Tone, 3D Lock + Orbiting Satellites) */}
+            {/* Section 5: Готовая база школы (Dark Tone, 3D Lock + Orbiting Satellites) */}
             <section
               data-home-background-section="true"
               data-home-section-index="5"
@@ -491,16 +681,25 @@ export default function App() {
                 <ModelStage model="lock" side="left" mirror={true} tone="dark" />
                 <div className="ml-auto flex-1 w-full max-w-none md:w-auto md:max-w-155">
                   <article className="prose _copyBlock_1w2bm_121 relative z-4 w-full max-w-none md:max-w-155 p-4 text-left lg:p-7 ml-auto">
-                    <h1>Private, really private.</h1>
-                    <p>
-                      When we say Kyun is private, we mean it. We don’t collect or store anything
-                      we don’t legitimately need, and we will <strong>never</strong> ask you for ID.
+                    <h1>Все школы в единой защищённой базе</h1>
+                    <p className="text-base text-[#ccc] leading-relaxed mb-4">
+                      Списки учащихся и классов синхронизированы с государственной системой образования. Никаких сторонних паролей или сбора паспортов.
                     </p>
-                    <p>
-                      Kyun has first-class support for Monero, the most widely used private
-                      cryptocurrency.
-                    </p>
-                    <p>And, since we’re an EU company, we’re also bound by the GDPR.</p>
+
+                    <div className="grid grid-cols-3 gap-2 my-4 font-mono text-xs">
+                      <div className="border border-white/15 bg-white/5 p-2.5">
+                        <div className="text-white font-bold text-sm">01. Контур</div>
+                        <div className="text-[#888] text-[11px] mt-0.5">Только свои</div>
+                      </div>
+                      <div className="border border-white/15 bg-white/5 p-2.5">
+                        <div className="text-white font-bold text-sm">02. Вход</div>
+                        <div className="text-[#888] text-[11px] mt-0.5">Номер школы</div>
+                      </div>
+                      <div className="border border-white/15 bg-white/5 p-2.5">
+                        <div className="text-white font-bold text-sm">03. Защита</div>
+                        <div className="text-[#888] text-[11px] mt-0.5">Серверы в РБ</div>
+                      </div>
+                    </div>
                   </article>
                 </div>
               </div>
@@ -509,7 +708,7 @@ export default function App() {
             {/* Dither Transition 5 -> 6 (Dark -> Light) */}
             <DitherTransition fromTone="dark" toTone="light" />
 
-            {/* Section 6: People stay for a reason (Light Tone, Testimonials) */}
+            {/* Section 6: Отзывы (Light Tone, Testimonials) */}
             <section
               data-home-background-section="true"
               data-home-section-index="6"
@@ -520,10 +719,9 @@ export default function App() {
               <div className="relative z-4 mx-auto w-full box-border max-w-none px-0 py-10 md:max-w-330 md:px-5 md:py-12">
                 <div className="prose w-full py-7 text-center md:py-9">
                   <header className="_testimonialsHeader_1w2bm_295 mx-auto mb-8 max-w-170 md:mb-9">
-                    <h1 className="mt-0 mb-6 pl-0">People stay for a reason.</h1>
-                    <p>
-                      The platform matters. The support, transparency, and feeling of being treated
-                      like a person matter too.
+                    <h1 className="mt-0 mb-4 pl-0">Что говорят в школах</h1>
+                    <p className="text-sm sm:text-base text-[#444]">
+                      Реальные впечатления учеников, преподавателей физической культуры и школьного руководства о платформе «ЛІГА».
                     </p>
                   </header>
 
@@ -539,29 +737,22 @@ export default function App() {
                             <div
                               key={`${item.id}-${grpIdx}`}
                               data-yakiniku="box"
-                              className={`relative overflow-hidden _box_19lkn_1 prose _testimonialCard_1w2bm_360 ${
-                                item.id === 'kvm' ? '_shortTestimonial_1w2bm_380' : '_longTestimonial_1w2bm_376'
-                              }`}
+                              className="relative overflow-hidden _box_19lkn_1 prose _testimonialCard_1w2bm_360 _shortTestimonial_1w2bm_380"
                             >
                               <div className="_testimonialPreview_1w2bm_384">
-                                <div className={`_testimonialBody_1w2bm_392 ${item.paragraphs.length > 1 ? '_masked_1w2bm_397' : ''}`}>
+                                <div className="_testimonialBody_1w2bm_392">
                                   <div className="_testimonialFlowShape_1w2bm_402"></div>
                                   {item.paragraphs.map((p, i) => (
-                                    <p key={i}>{p}</p>
+                                    <p key={i} className="text-xs sm:text-sm leading-relaxed">{p}</p>
                                   ))}
                                 </div>
                                 <div className="_testimonialIdentity_1w2bm_411">
                                   <div className="_testimonialMeta_1w2bm_424">
                                     <strong>{item.name}</strong>
                                     <span>
-                                      <a
-                                        href={item.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-inherit"
-                                      >
+                                      <span className="text-inherit opacity-75">
                                         {item.site}
-                                      </a>
+                                      </span>
                                     </span>
                                   </div>
                                   <img
@@ -572,17 +763,6 @@ export default function App() {
                                   />
                                 </div>
                               </div>
-                              {item.paragraphs.length > 1 && (
-                                <div className="_testimonialActionStrip_1w2bm_454 light">
-                                  <button
-                                    className="_showMore_1w2bm_464 _button_nf8qc_17"
-                                    data-yakiniku="button"
-                                    onClick={() => setActiveModalTestimonial(item)}
-                                  >
-                                    <span className="_content_nf8qc_108">read more</span>
-                                  </button>
-                                </div>
-                              )}
                             </div>
                           ))}
                         </div>
@@ -596,7 +776,7 @@ export default function App() {
             {/* Dither Transition 6 -> 7 (Light -> Dark) */}
             <DitherTransition fromTone="light" toTone="dark" />
 
-            {/* Section 7: Start small. Stay in control (Dark Tone, CTA) */}
+            {/* Section 7: Финальный блок (Dark Tone, CTA) */}
             <section
               data-home-background-section="true"
               data-home-section-index="7"
@@ -605,22 +785,58 @@ export default function App() {
               style={{ '--section-z': 33 }}
             >
               <div className="relative z-4 mx-auto w-full box-border max-w-none px-0 py-10 md:max-w-330 md:px-5 md:py-12">
-                <article className="prose _copyBlock_1w2bm_121 relative z-4 w-full max-w-none md:max-w-155 p-4 text-left lg:p-7 mx-auto flex flex-col gap-4 p-0 text-center">
-                  <h1 className="m-0">Start small. Stay in control.</h1>
-                  <p className="m-0 mx-auto">
-                    Create only what you need today. Upgrade when the project grows. One monthly
-                    price that stays the same until you choose to upgrade.
+                <article className="prose _copyBlock_1w2bm_121 relative z-4 w-full max-w-none md:max-w-200 p-4 text-left lg:p-8 mx-auto flex flex-col gap-5 p-0 text-center">
+                  <h1 className="m-0 text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
+                    Сделайте субботу в вашей школе активной
+                  </h1>
+                  <p className="m-0 mx-auto max-w-xl text-base text-[#ccc] leading-relaxed">
+                    Установите приложение «ЛІГА», соберите сборную своего класса и включайтесь в турниры своего района.
                   </p>
-                  <p className="m-0 mt-3 flex flex-wrap justify-center gap-4">
-                    <a className="nou" href="#services" onClick={() => setIsAuthOpen(true)}>
+                  
+                  {/* Three Download Buttons Repetition */}
+                  <div className="m-0 mt-3 flex flex-wrap justify-center items-center gap-4">
+                    <a
+                      href="/liga.apk"
+                      download="liga.apk"
+                      className="nou"
+                    >
                       <button
                         data-yakiniku="button"
-                        className="relative control _loadingPhaseB_nf8qc_68 _button_nf8qc_17"
+                        className="relative control _loadingPhaseB_nf8qc_68 _button_nf8qc_17 bg-white text-black font-bold px-7 py-3.5 flex items-center gap-3 hover:bg-[#e0e0e0] transition-colors text-base shadow-[0_0_20px_rgba(255,255,255,0.25)]"
                       >
-                        <span className="_content_nf8qc_108">View Services</span>
+                        <span className="_content_nf8qc_108 flex items-center gap-2.5">
+                          <span className="text-base">⬇</span>
+                          <span>Скачать Android .APK (v1.2 · 24 MB)</span>
+                        </span>
                       </button>
                     </a>
-                  </p>
+
+                    <div className="relative inline-block">
+                      <button
+                        disabled
+                        data-yakiniku="button"
+                        className="relative control _button_nf8qc_17 bg-[#1c1c1c] text-[#888] border border-[#333] px-5 py-3.5 cursor-not-allowed flex items-center gap-2 text-sm"
+                      >
+                        <span className="_content_nf8qc_108">App Store</span>
+                      </button>
+                      <span className="absolute -top-2.5 -right-2 bg-white text-black text-[9px] font-bold px-1.5 py-0.5 rounded shadow border border-black/30 font-mono tracking-wider">
+                        СКОРО
+                      </span>
+                    </div>
+
+                    <div className="relative inline-block">
+                      <button
+                        disabled
+                        data-yakiniku="button"
+                        className="relative control _button_nf8qc_17 bg-[#1c1c1c] text-[#888] border border-[#333] px-5 py-3.5 cursor-not-allowed flex items-center gap-2 text-sm"
+                      >
+                        <span className="_content_nf8qc_108">Google Play</span>
+                      </button>
+                      <span className="absolute -top-2.5 -right-2 bg-white text-black text-[9px] font-bold px-1.5 py-0.5 rounded shadow border border-black/30 font-mono tracking-wider">
+                        СКОРО
+                      </span>
+                    </div>
+                  </div>
                 </article>
               </div>
             </section>
@@ -630,80 +846,24 @@ export default function App() {
         {/* Footer */}
         <div className="_col_1o6no_1">
           <footer className="_footer_113sd_1 mt-0 flex-col-center">
-            <div>
-              <a href="/docs/tos">Terms of Service</a>
-              <i></i>
-              <a href="/docs/aup">Acceptable Use Policy</a>
-              <i></i>
-              <a href="/docs/privacypolicy">Privacy Policy</a>
-              <br />
-              <a href="/docs/faqs/">Frequently Asked Questions</a>
-              <i></i>
-              <a href="/canary.txt">Canary</a>
-              <i></i>
-              <a href="/keys">PGP</a>
-              <i></i>
-              <a href="http://kyunnnckhnkl6oevonhwbltenwbgxwxf54mcpvmicphmaeqr5ourgqyd.onion/">
-                Tor
-              </a>
+            <div className="text-xs text-[#888] space-x-2">
+              <a href="#home">Главная</a>
+              <i>•</i>
+              <a href="#formats">Форматы</a>
+              <i>•</i>
+              <a href="#solution">Решение</a>
+              <i>•</i>
+              <a href="#reviews">Отзывы</a>
+              <i>•</i>
+              <a href="#download">Скачать</a>
             </div>
 
-            <div className="_contacts_113sd_46 flex justify-center">
-              <a href="https://x.com/kyunhost" target="_blank" rel="noopener noreferrer">
-                <img
-                  src="data:image/gif;base64,R0lGODlhCQAKAIABAHp6eoiIiCH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAJAAoAAAIUhIN4AXnNGIwyqWvXfHdFMymhFRQAOw=="
-                  alt="X/Twitter"
-                />
-              </a>
-              <a href="https://matrix.to/#/#chat:kyun.sh" target="_blank" rel="noopener noreferrer">
-                <img
-                  src="data:image/gif;base64,R0lGODlhCQAKAIABAHp6eoiIiCH5BAEKAAEALAAAAAAJAAoAAAIVjG+gCGn6mpx0VovD27nzz4EYmFkFADs="
-                  alt="Matrix"
-                />
-              </a>
-              <a href="mailto:hello@kyun.sh">
-                <img
-                  src="data:image/gif;base64,R0lGODlhDAAIAIABAHp6eoiIiCH5BAEKAAEALAAAAAAMAAgAAAIUjI+pyw0fDpsTUWjtvbl4H0XgWAAAOw=="
-                  alt="Email"
-                />
-              </a>
-              <a href="https://t.me/channelkyun" target="_blank" rel="noopener noreferrer">
-                <img
-                  src="data:image/gif;base64,R0lGODlhCQAJAIABAHp6eoiIiCH5BAEKAAEALAAAAAAJAAkAAAITjI+pyw3qnGupWhqtrN1m30UAAOw="
-                  alt="Telegram"
-                />
-              </a>
-            </div>
-
-            <a
-              href="https://kycnot.me/service/kyun"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="nou"
-            >
-              <small className="bg-d h-8 flex px-2 border items-center gap-4 opacity-60 text-focus">
-                <img
-                  src="data:image/gif;base64,R0lGODlhMwAHAPAAAAAAAAAAACH5BAEKAAEALAAAAAAzAAcAAAJAjI+py+0PY4p0gYozwXzbzz1BqH0kaVYmmgUvebQxG25vVts6/2w5d0sNez1cb2ck/mS3pPL2y0iXTqZUWj0yCQA7"
-                  alt="KYCnot.me"
-                  style={{ width: '51px', height: '7px' }}
-                />
-                <span className="flex gap-2 items-center">
-                  <img
-                    src="data:image/gif;base64,R0lGODlhBQAFAPAAAAAAAAAAACH5BAEKAAEALAAAAAAFAAUAAAIMjI+py+0Po5y02lsKADs="
-                    alt=""
-                    style={{ width: '5px', height: '5px' }}
-                  />
-                  <span className="_kycnotmeScore_113sd_68">5.0</span>
-                </span>
-              </small>
-            </a>
-
-            <p className="_company_113sd_41 text-dark">
-              Kyun SRL / 51514103 / J2025021445009
+            <p className="_company_113sd_41 text-dark mt-4">
+              «ЛІГА» — Единая платформа соревнований и полезных субботних мероприятий для школ
               <br />
-              Bv. Constantin Brancoveanu, Nr. 116, Bl. M2/III, Et. 3, Ap. 138, Bucharest, Romania
+              Минск, Республика Беларусь
             </p>
-            <p className="_quote_113sd_34">"Privacy is a prerequisite for freedom"</p>
+            <p className="_quote_113sd_34">"Суббота с реальной пользой и азартом для каждого ученика"</p>
           </footer>
         </div>
       </main>
@@ -744,37 +904,6 @@ export default function App() {
                 alt={activeModalTestimonial.name}
               />
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Auth Modal */}
-      {isAuthOpen && (
-        <div className="fixed inset-0 z-[10010] bg-black/80 flex items-center justify-center p-4">
-          <div className="bg-[#181818] border border-white/20 rounded-md max-w-sm w-full p-6 text-xs font-mono text-white">
-            <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/10">
-              <span className="font-bold uppercase tracking-wider">Account Access</span>
-              <button
-                onClick={() => setIsAuthOpen(false)}
-                className="text-[#888] hover:text-white cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-            <p className="text-kyun-text mb-4">
-              Enter your master token to access your Kyun console. No KYC, no email, no tracking.
-            </p>
-            <input
-              type="password"
-              placeholder="kyn_sec_..."
-              className="w-full bg-black border border-white/20 rounded px-3 py-2 text-xs mb-3 text-white focus:outline-none"
-            />
-            <button
-              onClick={() => setIsAuthOpen(false)}
-              className="w-full py-2 bg-white text-black font-bold uppercase rounded hover:bg-gray-200 transition-colors cursor-pointer"
-            >
-              Sign In
-            </button>
           </div>
         </div>
       )}
