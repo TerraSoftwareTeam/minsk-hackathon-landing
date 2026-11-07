@@ -354,12 +354,16 @@ var qrcode=(function(){var P=function(x,w){var g=236,l=17,n=x,s=O[w],t=null,r=0,
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
 let toastTimer;function toast(message){clearTimeout(toastTimer);$('#toast').textContent=message;$('#toast').classList.add('visible');toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),5500)}
 const dialog=$('#download-dialog');let modalTrigger=null;
-function downloadApk(){const a=document.createElement('a');a.href='kola.apk';a.download='kola.apk';document.body.appendChild(a);a.click();a.remove()}
+async function downloadApk(){await apkReady;const a=document.createElement('a');a.href=apkUrl.href;a.download='kola.apk';document.body.appendChild(a);a.click();a.remove()}
 $$('[data-download]').forEach(button=>button.addEventListener('click',()=>{if(button.classList.contains('hero-qr')){modalTrigger=button;dialog.showModal();document.body.classList.add('modal-open')}else downloadApk()}));
 function closeDialog(){dialog.close()}$('.dialog-close').addEventListener('click',closeDialog);dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeDialog()});dialog.addEventListener('close',()=>{document.body.classList.remove('modal-open');modalTrigger?.focus({preventScroll:true})});
 const apkUrl=new URL('kola.apk',location.href);apkUrl.search='';apkUrl.hash='';
-try{const qr=qrcode(0,'M');qr.addData(apkUrl.href);qr.make();const svg=qr.createSvgTag({cellSize:4,margin:16,scalable:true});$$('[data-qr]').forEach(el=>el.innerHTML=svg)}catch{ $$('[data-qr]').forEach(el=>{el.textContent='APK';el.style.color='#102044'});toast('QR недоступен. Скачайте APK по кнопке.') }
-$('#qr-warning').hidden=!['localhost','127.0.0.1','[::1]'].includes(location.hostname);
+function renderQr(){try{const qr=qrcode(0,'M');qr.addData(apkUrl.href);qr.make();const svg=qr.createSvgTag({cellSize:4,margin:16,scalable:true});$$('[data-qr]').forEach(el=>el.innerHTML=svg)}catch{ $$('[data-qr]').forEach(el=>{el.textContent='APK';el.style.color='#102044'});toast('QR недоступен. Скачайте APK по кнопке.') }}
+renderQr();
+const apkIsLocal=()=>apkUrl.origin===location.origin;
+function updateQrWarning(){$('#qr-warning').hidden=!(apkIsLocal()&&['localhost','127.0.0.1','[::1]'].includes(location.hostname))}updateQrWarning();
+// Последний релиз берём с GitHub; если API недоступен, остаётся локальный kola.apk
+const apkReady=fetch('https://api.github.com/repos/TerraSoftwareTeam/minsk-hackathon-mobile/releases/latest',{headers:{Accept:'application/vnd.github+json'}}).then(r=>r.ok?r.json():Promise.reject()).then(rel=>{const apks=(rel.assets||[]).filter(a=>/\.apk$/i.test(a.name));const a=apks.find(x=>x.name.toLowerCase()==='kola.apk')||apks[0];if(!a)return;apkUrl.href=a.browser_download_url;renderQr();updateQrWarning();const dl=$('#download-dialog a[download]');if(dl){dl.href=apkUrl.href}}).catch(()=>{});
 $('#copy-link').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(apkUrl.href);$('#copy-link').textContent='Ссылка скопирована';setTimeout(()=>$('#copy-link').textContent='Скопировать ссылку на APK',2500)}catch{$('#copy-link').textContent=apkUrl.href;$('#copy-link').style.overflowWrap='anywhere'}});
 const menu=$('.menu-toggle');menu.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Закрыть меню':'Открыть меню');$('#navigation').classList.toggle('open',open)});
 function closeMenu(){menu.setAttribute('aria-expanded','false');menu.setAttribute('aria-label','Открыть меню');$('#navigation').classList.remove('open')}
